@@ -1,11 +1,18 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import { SearchBar } from '../components/SearchBar';
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Documentation Search">
+	<main class="min-h-screen flex flex-col items-center justify-center p-4">
+		<div class="w-full max-w-2xl mx-auto text-center space-y-8">
+			<h1 class="text-5xl font-bold text-primary mb-8">
+				Documentation Search
+			</h1>
+			<SearchBar client:load />
+		</div>
+	</main>
 </Layout>

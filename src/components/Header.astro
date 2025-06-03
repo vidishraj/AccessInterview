@@ -1,0 +1,33 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<header class="bg-white shadow-sm">
+  <nav class="container mx-auto px-4 py-4">
+    <div class="flex justify-between items-center">
+      <a href="/" class="text-2xl font-bold text-primary hover:text-accent transition-colors">
+        DocHub
+      </a>
+      <div class="space-x-6">
+        <a 
+          href="/" 
+          class={`hover:text-accent transition-colors ${currentPath === '/' ? 'text-accent' : 'text-primary'}`}
+        >
+          Home
+        </a>
+        <a 
+          href="/docs/sample" 
+          class={`hover:text-accent transition-colors ${currentPath.startsWith('/docs') ? 'text-accent' : 'text-primary'}`}
+        >
+          Docs
+        </a>
+        <a 
+          href="/admin" 
+          class={`hover:text-accent transition-colors ${currentPath === '/admin' ? 'text-accent' : 'text-primary'}`}
+        >
+          Admin
+        </a>
+      </div>
+    </div>
+  </nav>
+</header> 
