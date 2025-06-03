@@ -64,6 +64,9 @@ export default function AdminDashboard() {
     <div className="max-w-4xl mx-auto p-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-4">Document Management</h1>
+        <div className="mb-2 text-yellow-700 bg-yellow-100 border border-yellow-300 rounded px-4 py-2">
+          After uploading a document, please wait up to 5 minutes for the changes to take effect in the documentation and search results.
+        </div>
         <div className="flex items-center gap-4">
           <label className="bg-accent text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors cursor-pointer">
             Upload Document
