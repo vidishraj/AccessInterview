@@ -7,6 +7,7 @@ export default function AdminDashboard() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const token = sessionStorage.getItem('adminToken');
 
   useEffect(() => {
@@ -30,12 +31,16 @@ export default function AdminDashboard() {
 
     setIsUploading(true);
     setError(null);
+    setSuccess(null);
 
     try {
-      const newDoc = await uploadDocument(file, token);
+      const response = await uploadDocument(file, token);
+      const { message, ...newDoc } = response;
       setDocuments(prev => [newDoc, ...prev]);
+      setSuccess(message || 'File uploaded successfully.');
     } catch (err) {
       setError('Failed to upload document');
+      setSuccess(null);
       console.error(err);
     } finally {
       setIsUploading(false);
@@ -72,6 +77,7 @@ export default function AdminDashboard() {
           </label>
           {isUploading && <span className="text-gray-600">Uploading...</span>}
           {error && <span className="text-red-500">{error}</span>}
+          {success && <span className="text-green-600">{success}</span>}
         </div>
       </div>
 

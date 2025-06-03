@@ -41,7 +41,7 @@ export async function getDocument(id: number): Promise<Document> {
   return response.json();
 }
 
-export async function uploadDocument(file: File, token: string): Promise<Document> {
+export async function uploadDocument(file: File, token: string): Promise<any> {
   const formData = new FormData();
   formData.append('file', file);
 

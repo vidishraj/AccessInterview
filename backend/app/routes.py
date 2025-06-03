@@ -71,7 +71,8 @@ def upload_document(current_user):
     if not file.filename.endswith('.md'):
         return jsonify({'message': 'Only markdown files are allowed'}), 400
     
-    filename = secure_filename(file.filename)
+    # Always save files in lowercase for cross-platform compatibility
+    filename = secure_filename(file.filename).lower()
     filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
     file.save(filepath)
     
@@ -97,7 +98,8 @@ def upload_document(current_user):
         'id': doc.id,
         'title': doc.title,
         'filename': doc.filename,
-        'created_at': doc.created_at.isoformat()
+        'created_at': doc.created_at.isoformat(),
+        'message': 'File uploaded successfully. All files are saved in lowercase for compatibility.'
     }), 201
 
 @api.route('/documents/<int:doc_id>', methods=['DELETE'])
