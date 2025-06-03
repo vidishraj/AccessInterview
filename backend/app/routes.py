@@ -23,7 +23,7 @@ def token_required(f):
         return f(current_user, *args, **kwargs)
     return decorated
 
-@api.route('/api/login', methods=['POST'])
+@api.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     user = User.query.filter_by(username=data.get('username')).first()
@@ -37,7 +37,7 @@ def login():
     
     return jsonify({'message': 'Invalid credentials'}), 401
 
-@api.route('/api/documents', methods=['GET'])
+@api.route('/documents', methods=['GET'])
 def get_documents():
     docs = Document.query.order_by(Document.created_at.desc()).all()
     return jsonify([{
@@ -47,7 +47,7 @@ def get_documents():
         'created_at': doc.created_at.isoformat()
     } for doc in docs])
 
-@api.route('/api/documents/<int:doc_id>', methods=['GET'])
+@api.route('/documents/<int:doc_id>', methods=['GET'])
 def get_document(doc_id):
     doc = Document.query.get_or_404(doc_id)
     return jsonify({
@@ -58,7 +58,7 @@ def get_document(doc_id):
         'created_at': doc.created_at.isoformat()
     })
 
-@api.route('/api/documents', methods=['POST'])
+@api.route('/documents', methods=['POST'])
 @token_required
 def upload_document(current_user):
     if 'file' not in request.files:
@@ -100,7 +100,7 @@ def upload_document(current_user):
         'created_at': doc.created_at.isoformat()
     }), 201
 
-@api.route('/api/documents/<int:doc_id>', methods=['DELETE'])
+@api.route('/documents/<int:doc_id>', methods=['DELETE'])
 @token_required
 def delete_document(current_user, doc_id):
     doc = Document.query.get_or_404(doc_id)
@@ -120,7 +120,7 @@ def delete_document(current_user, doc_id):
     db.session.commit()
     return '', 204
 
-@api.route('/api/search', methods=['GET'])
+@api.route('/search', methods=['GET'])
 def search_documents():
     query = request.args.get('q', '').lower()
     if not query:
