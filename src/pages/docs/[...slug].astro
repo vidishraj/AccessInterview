@@ -14,12 +14,9 @@ const { doc } = Astro.props;
 const { Content } = await doc.render();
 ---
 
-<Layout title={doc.data.title ?? "Untitled"}>
+<Layout>
   <main class="container mx-auto px-4 py-8">
     <article class="prose prose-lg mx-auto">
-      <h1 class="text-4xl font-bold text-primary mb-4">
-        {doc.data.title ?? "Untitled"}
-      </h1>
 
       {doc.data.pubDate && (
         <div class="mb-8">
