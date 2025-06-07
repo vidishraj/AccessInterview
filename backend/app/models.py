@@ -20,5 +20,6 @@ class Document(db.Model):
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
     filename = db.Column(db.String(255), nullable=False)
+    tags = db.Column(db.String(500), nullable=True)  # Store tags as comma-separated string
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

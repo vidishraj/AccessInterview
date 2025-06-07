@@ -6,6 +6,7 @@ export interface Document {
   content: string;
   filename: string;
   created_at: string;
+  tags: string[];
 }
 
 export async function login(username: string, password: string): Promise<string> {
@@ -41,10 +42,7 @@ export async function getDocument(id: number): Promise<Document> {
   return response.json();
 }
 
-export async function uploadDocument(file: File, token: string): Promise<any> {
-  const formData = new FormData();
-  formData.append('file', file);
-
+export async function uploadDocument(formData: FormData, token: string): Promise<any> {
   const response = await fetch(`${API_BASE_URL}/documents`, {
     method: 'POST',
     headers: {

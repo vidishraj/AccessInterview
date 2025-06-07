@@ -44,6 +44,7 @@ def get_documents():
         'id': doc.id,
         'title': doc.title,
         'filename': doc.filename,
+        'tags': doc.tags.split(',') if doc.tags else [],
         'created_at': doc.created_at.isoformat()
     } for doc in docs])
 
@@ -55,6 +56,7 @@ def get_document(doc_id):
         'title': doc.title,
         'content': doc.content,
         'filename': doc.filename,
+        'tags': doc.tags.split(',') if doc.tags else [],
         'created_at': doc.created_at.isoformat()
     })
 
@@ -65,11 +67,17 @@ def upload_document(current_user):
         return jsonify({'message': 'No file provided'}), 400
     
     file = request.files['file']
+    title = request.form.get('title')
+    tags = request.form.get('tags')
+    
     if file.filename == '':
         return jsonify({'message': 'No file selected'}), 400
     
     if not file.filename.endswith('.md'):
         return jsonify({'message': 'Only markdown files are allowed'}), 400
+    
+    if not title:
+        return jsonify({'message': 'Title is required'}), 400
     
     # Always save files in lowercase for cross-platform compatibility
     filename = secure_filename(file.filename).lower()
@@ -87,9 +95,10 @@ def upload_document(current_user):
         content = f.read()
     
     doc = Document(
-        title=filename.replace('.md', ''),
+        title=title,
         content=content,
-        filename=filename
+        filename=filename,
+        tags=tags
     )
     db.session.add(doc)
     db.session.commit()
@@ -98,6 +107,7 @@ def upload_document(current_user):
         'id': doc.id,
         'title': doc.title,
         'filename': doc.filename,
+        'tags': doc.tags.split(',') if doc.tags else [],
         'created_at': doc.created_at.isoformat(),
         'message': 'File uploaded successfully. All files are saved in lowercase for compatibility.'
     }), 201
@@ -125,19 +135,31 @@ def delete_document(current_user, doc_id):
 @api.route('/search', methods=['GET'])
 def search_documents():
     query = request.args.get('q', '').lower()
-    if not query:
+    tag_filter = request.args.get('tag', '').lower()
+    
+    if not query and not tag_filter:
         return jsonify([])
     
-    docs = Document.query.filter(
-        db.or_(
-            Document.title.ilike(f'%{query}%'),
-            Document.content.ilike(f'%{query}%')
+    base_query = Document.query
+    
+    if query:
+        base_query = base_query.filter(
+            db.or_(
+                Document.title.ilike(f'%{query}%'),
+                Document.content.ilike(f'%{query}%'),
+                Document.tags.ilike(f'%{query}%')
+            )
         )
-    ).all()
+    
+    if tag_filter:
+        base_query = base_query.filter(Document.tags.ilike(f'%{tag_filter}%'))
+    
+    docs = base_query.all()
     
     return jsonify([{
         'id': doc.id,
         'title': doc.title,
         'filename': doc.filename,
+        'tags': doc.tags.split(',') if doc.tags else [],
         'created_at': doc.created_at.isoformat()
     } for doc in docs])
