@@ -5,6 +5,9 @@ import { getDocuments } from '../utils/api';
 
 const ITEMS_PER_PAGE = 10;
 
+// Helper function to normalize tags
+const normalizeTag = (tag: string) => tag.trim().toLowerCase();
+
 export default function DocumentsList() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,16 +32,26 @@ export default function DocumentsList() {
     }
   };
 
-  // Get unique tags from all documents
+  // Get unique tags from all documents with normalization
   const allTags = Array.from(
     new Set(
-      documents.flatMap(doc => doc.tags || [])
+      documents.flatMap(doc => 
+        (doc.tags || []).map(tag => {
+          const normalizedTag = normalizeTag(tag);
+          // Return the first occurrence of this normalized tag from all documents
+          return documents
+            .flatMap(d => d.tags || [])
+            .find(t => normalizeTag(t) === normalizedTag) || normalizedTag;
+        })
+      )
     )
   ).filter(tag => tag.trim() !== '');
 
-  // Filter documents by selected tag
+  // Filter documents by selected tag (case-insensitive)
   const filteredDocuments = selectedTag
-    ? documents.filter(doc => doc.tags?.includes(selectedTag))
+    ? documents.filter(doc => 
+        (doc.tags || []).some(tag => normalizeTag(tag) === normalizeTag(selectedTag))
+      )
     : documents;
 
   // Calculate pagination
@@ -66,7 +79,7 @@ export default function DocumentsList() {
               key={tag}
               onClick={() => setSelectedTag(tag)}
               className={`px-3 py-1 rounded-full text-sm ${
-                selectedTag === tag
+                selectedTag && normalizeTag(selectedTag) === normalizeTag(tag)
                   ? 'bg-accent text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}

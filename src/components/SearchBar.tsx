@@ -29,16 +29,13 @@ export function SearchBar() {
                    focus:border-transparent transition-shadow"
           whileFocus={{ scale: 1.01 }}
         />
-        <motion.button
+        <button
           type="submit"
           className="absolute right-3 top-1/2 -translate-y-1/2 px-6 py-2 
-                   bg-accent text-white rounded-full hover:bg-blue-600 
-                   transition-colors"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+                   bg-accent text-white rounded-full"
         >
           Search
-        </motion.button>
+        </button>
       </form>
     </motion.div>
   );
